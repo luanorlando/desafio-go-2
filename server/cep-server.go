@@ -6,15 +6,16 @@ import (
 	"net/http"
 )
 
-type apiResult struct {
+type ApiResult struct {
 	Source string
 	Body   string
 }
 
-func RequestViaCep(cep string, ch chan<- apiResult) {
+func RequestViaCep(cep string, ch chan<- ApiResult) {
+	// time.Sleep(time.Second)
 	url := "http://viacep.com.br/ws/" + cep + "/json/"
 
-	emptyResult := apiResult{
+	emptyResult := ApiResult{
 		Source: "",
 		Body:   "",
 	}
@@ -33,7 +34,7 @@ func RequestViaCep(cep string, ch chan<- apiResult) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		ch <- apiResult{
+		ch <- ApiResult{
 			Source: "Via CEP",
 			Body:   fmt.Sprintf("Erro: status %d recebido da API", resp.StatusCode),
 		}
@@ -45,17 +46,18 @@ func RequestViaCep(cep string, ch chan<- apiResult) {
 		ch <- emptyResult
 	}
 
-	ch <- apiResult{
+	ch <- ApiResult{
 		Source: "Via CEP",
 		Body:   string(body),
 	}
 }
 
-func RequestBrasilCep(cep string, ch chan<- apiResult) {
+func RequestBrasilCep(cep string, ch chan<- ApiResult) {
+	// time.Sleep(time.Second)
 	url := "https://brasilapi.com.br/api/cep/v1/" + cep
 	req, err := http.NewRequest("GET", url, nil)
 
-	emptyResult := apiResult{
+	emptyResult := ApiResult{
 		Source: "",
 		Body:   "",
 	}
@@ -73,7 +75,7 @@ func RequestBrasilCep(cep string, ch chan<- apiResult) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		ch <- apiResult{
+		ch <- ApiResult{
 			Source: "Brasil CEP",
 			Body:   fmt.Sprintf("Erro: status %d recebido da API", resp.StatusCode),
 		}
@@ -85,7 +87,7 @@ func RequestBrasilCep(cep string, ch chan<- apiResult) {
 		ch <- emptyResult
 	}
 
-	ch <- apiResult{
+	ch <- ApiResult{
 		Source: "Brasil CEP",
 		Body:   string(body),
 	}

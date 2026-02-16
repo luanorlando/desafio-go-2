@@ -10,7 +10,7 @@ import (
 )
 
 func handleConcuerncy(cep string) {
-	ch := make(chan apiResult)
+	ch := make(chan server.ApiResult)
 
 	go server.RequestBrasilCep(cep, ch)
 	go server.RequestViaCep(cep, ch)
@@ -27,7 +27,6 @@ func handleConcuerncy(cep string) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-
 	params := strings.Split(r.URL.Path, "/")
 
 	if len(params) != 2 || params[1] == "" {
@@ -35,13 +34,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cep := strings.TrimSpace(params[1])
+	cep := string(params[1])
 
 	handleConcuerncy(cep)
 }
 
 func main() {
-	// http://localhost:8080/cep
+	// curl http://localhost:8080/01153000
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(":8080", nil)
 }
