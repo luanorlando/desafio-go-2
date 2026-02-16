@@ -3,15 +3,11 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"server"
 	"strings"
 	"time"
-)
 
-type apiResult struct {
-	Source string
-	Body   string
-}
+	"github.com/luanorlando/desafio-go-2/server"
+)
 
 func handleConcuerncy(cep string) {
 	ch := make(chan apiResult)
